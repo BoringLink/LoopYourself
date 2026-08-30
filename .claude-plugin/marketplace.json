@@ -1,0 +1,14 @@
+{
+  "name": "loopyourself-marketplace",
+  "owner": {
+    "name": "BoringLink",
+    "id": "github:BoringLink"
+  },
+  "plugins": [
+    {
+      "name": "loopyourself",
+      "source": "./",
+      "description": "A framework-agnostic Agent todo system aligned with Linear terminology. Agents autonomously drive issues through the full Linear lifecycle (Backlog to Done)."
+    }
+  ]
+}

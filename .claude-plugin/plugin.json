@@ -1,0 +1,16 @@
+{
+  "name": "loopyourself",
+  "displayName": "LoopYourself",
+  "version": "0.1.0",
+  "description": "A framework-agnostic Agent todo system aligned with Linear terminology. Local two-pool board (Backlog/Active), user-only admission gate, unattended agent loop with SubAgent review, circuit breaker, and one-way Linear push via MCP.",
+  "author": {
+    "name": "BoringLink",
+    "url": "https://github.com/BoringLink"
+  },
+  "repository": "https://github.com/BoringLink/LoopYourself",
+  "homepage": "https://github.com/BoringLink/LoopYourself",
+  "license": "MIT",
+  "keywords": ["todo", "linear", "issues", "agent", "workflow"],
+  "skills": ["./skills/loopyourself"],
+  "hooks": "./hooks/hooks.json"
+}
