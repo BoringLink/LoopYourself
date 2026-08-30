@@ -1,7 +1,7 @@
 ---
 name: loopyourself
 
-description: Manage the LoopYourself todo system: create and admit issues, run the unattended agent loop that drives issues from Ready to Done, sync with Linear via MCP. Use when the user mentions LoopYourself, the board, issues, or says /loopyourself: commands, or asks to start/stop/check the loop.
+description: Manage the LoopYourself todo system: create and admit issues, run the unattended agent loop that drives issues from Ready to Done, integrate Linear via MCP (one-way push, on-demand pull). Use when the user mentions LoopYourself, the board, issues, or says /loopyourself: commands, or asks to start/stop/check the loop.
 ---
 
 # LoopYourself
@@ -29,6 +29,7 @@ Read the full protocol at `docs/linear-protocol.md` in the plugin root before to
 - `start` / `stop` / `loop` — control the unattended loop
 - `reorder <ids...>` — **USER** — re-sequence the Active pool
 - `link <team> [project]` — record Linear scope
+- `attach <id> <linearId> [url]` — record the Linear link on a local issue
 - `verify` — statusMap push preflight
 - `status` — render the two-pool board
 
@@ -43,7 +44,7 @@ When the user runs `/loopyourself:start` (or asks you to start the loop):
    - Review passes AND requirement resolved → `loopyourself advance <id>` (to In Review), then `done <id>`, commit, pick the next issue.
    - Review fails → `loopyourself advance <id> --review-fail` (back to In Progress), fix, repeat. Do not retry more than `review.maxRounds` (default 3) — then `loopyourself block <id>` and move on.
    - If `block` reports the loop stopped (consecutive threshold reached), stop and summarize for the user.
-5. **Linear push:** if `config.json` → `linear` is linked and the issue has `linearId`, push the state change via Linear MCP following `docs/linear-protocol.md`. Run `loopyourself verify` first; if it fails, continue the loop locally and surface the mapping error.
+5. **Linear push:** if `config.json` → `linear` is linked and the issue has `linearId`, push the state change via Linear MCP following `docs/linear-protocol.md`. Run `loopyourself verify` first; if it fails, continue the loop locally and surface the mapping error. If the issue has no `linearId` yet and has entered the workflow, create it on Linear per the protocol and record the link with `loopyourself attach`.
 6. Repeat until the Active pool is empty, then run `loopyourself stop` and report.
 
 ## Linear pull (user-initiated only)

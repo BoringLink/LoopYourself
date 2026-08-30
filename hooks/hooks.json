@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"const i=JSON.parse(require('fs').readFileSync(0,'utf8'));const t=(i.tool_name||'')+' '+(JSON.stringify(i.tool_input)||'');if(/delete|trash|archive|destroy|remove/i.test(t)){console.error('LoopYourself: refusing destructive Linear MCP call: '+t);process.exit(2)}\""
+            "command": "node -e \"const i=JSON.parse(require('fs').readFileSync(0,'utf8'));const n=i.tool_name||'';if(/delete|trash|archive|destroy|remove/i.test(n)){console.error('LoopYourself: refusing destructive Linear MCP tool: '+n);process.exit(2)}\""
           }
         ]
       }

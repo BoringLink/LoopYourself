@@ -1,7 +1,7 @@
 // LoopYourself OpenCode adapter.
 // Install: opencode plugin @loopyourself/opencode-plugin
 // (writes the package into opencode.json "plugin" array; auto-installed on startup)
-import { Plugin } from '@opencode-ai/plugin'
+const PROTOCOL = 'https://github.com/BoringLink/LoopYourself/blob/main/docs/linear-protocol.md'
 
 const LOOP_COMMANDS = {
   'loopyourself/init': {
@@ -10,7 +10,7 @@ const LOOP_COMMANDS = {
   },
   'loopyourself/start': {
     description: 'Start the unattended agent loop (Ready -> Done)',
-    template: 'Start the LoopYourself unattended loop. Run `loopyourself start`, then follow the loop protocol: pick the Active pool head via `loopyourself status` (NEVER admit Backlog issues yourself), execute the issue obeying repository conventions (AGENTS.md), run the SubAgent review gate before committing (advance with --review-fail on failure, block after maxRounds), push state to Linear via MCP per docs/linear-protocol.md when linked, and continue until the pool empties or the circuit breaker stops the loop. Report a summary at the end.',
+    template: 'Start the LoopYourself unattended loop. Run `loopyourself start`, then follow the loop protocol: pick the Active pool head via `loopyourself status` (NEVER admit Backlog issues yourself), execute the issue obeying repository conventions (AGENTS.md), run the SubAgent review gate before committing (advance with --review-fail on failure, block after maxRounds), push state to Linear via MCP per ' + PROTOCOL + ' when linked, and continue until the pool empties or the circuit breaker stops the loop. Report a summary at the end.',
   },
   'loopyourself/stop': {
     description: 'Stop the unattended loop',
@@ -22,11 +22,11 @@ const LOOP_COMMANDS = {
   },
   'loopyourself/ready': {
     description: 'USER ONLY — admit Backlog issue(s) into the workflow',
-    template: 'This command represents the USER\'s review decision. Confirm which issue(s) to admit, then run `loopyourself ready <LY-001|all>`. Never run this on the agent\'s own initiative during a loop.',
+    template: "This command represents the USER's review decision. Confirm which issue(s) to admit, then run `loopyourself ready <LY-001|all>`. Never run this on the agent's own initiative during a loop.",
   },
   'loopyourself/pull': {
     description: 'Pull issue updates from Linear (user-initiated)',
-    template: 'Only run when the user explicitly asks. Fetch issues in the configured Linear scope via Linear MCP, apply the pull protocol from docs/linear-protocol.md (map by state TYPE; new issues land as Backlog, never auto-admitted), then show the updated board via `loopyourself status`.',
+    template: 'Only run when the user explicitly asks. Fetch issues in the configured Linear scope via Linear MCP, apply the pull protocol from ' + PROTOCOL + ' (map by state TYPE; new issues land as Backlog, never auto-admitted), then show the updated board via `loopyourself status`.',
   },
   'loopyourself/reorder': {
     description: 'USER — re-sequence the Active pool execution order',
@@ -34,7 +34,7 @@ const LOOP_COMMANDS = {
   },
 }
 
-export const LoopYourselfPlugin: Plugin = async ({ project, client }) => {
+export const LoopYourselfPlugin = async ({ project, client }) => {
   return {
     // Inject the seven /loopyourself/ commands at config time.
     config: async (cfg) => {

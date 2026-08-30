@@ -26,7 +26,8 @@ When the CLI reports a transition `LY-001: In Review -> Done`:
    - team/project from config `linear` scope
    - title/description from the local issue
    - state = `resolveLinearState(config, 'Ready')` (or the current status)
-   - write the returned `linearId`/`linearUrl` back into the local issue frontmatter
+   - record the returned `linearId`/`linearUrl` with
+     `loopyourself attach LY-001 <linearId> <linearUrl>`
 2. If `linearId` exists, update the Linear issue state to
    `resolveLinearState(config, newStatus)`.
 3. If the MCP tool reports the target state name does not exist on the team, surface
@@ -45,7 +46,8 @@ When the user asks to pull Linear updates:
    - `started` → local In Progress (unless local is In Review; In Review wins locally)
    - `completed` → local Done
    - `canceled` → local Canceled
-   - `duplicate` → keep local state, render as terminal "Duplicate" on the board
+   - `duplicate` → keep local state unchanged; surface a note to the user that
+     Linear marks this issue as Duplicate (terminal on the Linear side only)
 4. New Linear issues with no local counterpart are created locally as Backlog
    (never auto-admitted — the admission gate stays user-only, ADR-0003).
 

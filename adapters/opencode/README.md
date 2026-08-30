@@ -28,5 +28,5 @@ never admit Backlog, stop on circuit breaker).
 ## Linear guard
 
 The core rules (never delete, scope guard, statusMap) live in the shared
-`docs/linear-protocol.md` at the repository root — same contract as the Claude
-Code adapter, no divergence.
+Linear protocol — same contract as the Claude Code adapter, no divergence:
+https://github.com/BoringLink/LoopYourself/blob/main/docs/linear-protocol.md
