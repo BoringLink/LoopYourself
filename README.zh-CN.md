@@ -50,7 +50,7 @@ Agent 循环**，并经 Agent 自己的 MCP 连接把状态变更单向推送到
 ### OpenCode
 
 ```sh
-opencode plugin @loopyourself/opencode-plugin
+opencode plugin @boringlink/opencode-plugin
 ```
 
 命令为 `/loopyourself/init` … `/loopyourself/reorder`；循环运行期间会在
@@ -65,7 +65,7 @@ npm i -g loopyourself   # 或：npx loopyourself <cmd>
 ```
 
 任何能跑 shell 命令、能读 Markdown 的 Agent 都能驱动它——Linear 契约见
-`docs/linear-protocol.md`。
+[docs/linear-protocol.md](./docs/linear-protocol.md)。
 
 ## 快速开始
 
@@ -99,7 +99,7 @@ Linear workflow 状态），执行 `loopyourself verify`。映射不全时推送
 ```
 
 数据默认提交进 git（Issue 成为可共享、可评审的历史）；想仅本地使用可 gitignore
-`.loopyourself/`。
+`.loopyourself/`。`loop.json`（机器本地的循环状态）会被自动 gitignore。
 
 ## 文档
 

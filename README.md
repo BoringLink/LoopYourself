@@ -56,7 +56,7 @@ Commands appear as `/loopyourself:init`, `/loopyourself:start`, `/loopyourself:s
 ### OpenCode
 
 ```sh
-opencode plugin @loopyourself/opencode-plugin
+opencode plugin @boringlink/opencode-plugin
 ```
 
 Commands appear as `/loopyourself/init` … `/loopyourself/reorder`; the loop
@@ -71,7 +71,7 @@ npm i -g loopyourself   # or: npx loopyourself <cmd>
 ```
 
 Any agent that can run shell commands and read Markdown can drive it — point it
-at `docs/linear-protocol.md` for the Linear contract.
+at [docs/linear-protocol.md](./docs/linear-protocol.md) for the Linear contract.
 
 ## Quick start
 
@@ -106,7 +106,8 @@ refused until the map is complete — by design.
 ```
 
 Data is committed to git by default (issues are shared, reviewable history);
-gitignore `.loopyourself/` if you prefer local-only.
+gitignore `.loopyourself/` if you prefer local-only. `loop.json` (machine-local
+loop state) is gitignored automatically.
 
 ## Documentation
 
