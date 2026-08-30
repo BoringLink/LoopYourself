@@ -25,6 +25,8 @@ export const STATUSES = [
 ]
 
 export const TERMINAL_STATUSES = ['Done', 'Canceled']
+export const ACTIVE_POOL_STATUSES = ['Ready', 'Todo', 'In Progress', 'In Review', 'Blocked']
+export const BACKLOG_POOL_STATUSES = ['Backlog']
 
 export const BOARD_TEMPLATE = `# LoopYourself Board
 

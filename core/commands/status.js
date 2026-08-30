@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
-import { dataPaths } from '../lib/fsutil.js'
-import { loadIssues, renderBoard } from '../lib/issues.js'
+import { dataPaths, writeText } from '../lib/fsutil.js'
+import { loadIssues, renderBoard, splitPools } from '../lib/issues.js'
 
 export function runStatus(cwd) {
   const paths = dataPaths(cwd)
@@ -11,11 +11,15 @@ export function runStatus(cwd) {
   }
   const config = JSON.parse(readFileSync(paths.config, 'utf8'))
   const issues = loadIssues(cwd)
-  process.stdout.write(renderBoard(issues, config.wipLimit))
-  const { active, backlog, terminal } = {
-    active: issues.filter((i) => ['Ready', 'Todo', 'In Progress', 'In Review', 'Blocked'].includes(i.status)),
-    backlog: issues.filter((i) => i.status === 'Backlog'),
-    terminal: issues.filter((i) => ['Done', 'Canceled'].includes(i.status)),
+  const board = renderBoard(issues, config.wipLimit)
+  // board.md is a rendered view of the issue files — keep it fresh.
+  writeText(paths.board, board)
+  process.stdout.write(board)
+
+  const { active, backlog, terminal } = splitPools(issues)
+  const executing = active.filter((i) => i.status !== 'Blocked')
+  if (executing.length > (config.wipLimit ?? 1)) {
+    process.stdout.write(`WARNING: WIP limit exceeded — ${executing.length}/${config.wipLimit} issues executing\n`)
   }
   process.stdout.write(
     `\nsummary: active ${active.length} (WIP limit ${config.wipLimit}), backlog ${backlog.length}, done ${terminal.length}\n`,

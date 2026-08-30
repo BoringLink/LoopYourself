@@ -1,14 +1,11 @@
 // Issue model: one frontmatter-markdown file per issue.
-// Membership of pools is DERIVED from status (see CONTEXT.md) — never stored.
+// Pool membership is DERIVED from status (see CONTEXT.md) — never stored.
 import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-
-const ACTIVE_POOL_STATUSES = ['Ready', 'Todo', 'In Progress', 'In Review', 'Blocked']
-const BACKLOG_POOL_STATUSES = ['Backlog']
+import { ACTIVE_POOL_STATUSES, BACKLOG_POOL_STATUSES, TERMINAL_STATUSES } from '../constants.js'
 
 export function issuePaths(cwd) {
-  const issuesDir = join(cwd, '.loopyourself', 'projects', 'default', 'issues')
-  return { dir: issuesDir }
+  return { dir: join(cwd, '.loopyourself', 'projects', 'default', 'issues') }
 }
 
 export function parseFrontmatter(text) {
@@ -32,10 +29,19 @@ export function serializeIssue(issue) {
     `linearId: ${issue.linearId ?? ''}`,
     `linearUrl: ${issue.linearUrl ?? ''}`,
     `reviewRounds: ${issue.reviewRounds ?? 0}`,
-    `createdAt: ${issue.createdAt}`,
-    `updatedAt: ${issue.updatedAt}`,
   ]
+  if (issue.order !== undefined) fm.push(`order: ${issue.order}`)
+  fm.push(`createdAt: ${issue.createdAt}`, `updatedAt: ${issue.updatedAt}`)
   return `---\n${fm.join('\n')}\n---\n\n# ${issue.title}\n\n${(issue.description ?? '').trim()}\n`
+}
+
+// The serialized file carries a redundant `# <title>` H1 for human readability;
+// strip it on load so save/load roundtrips do not accumulate headings.
+function stripTitleHeading(body, title) {
+  const text = body.replace(/^\n+/, '')
+  const h1 = text.match(/^# (.*)\n+/)
+  if (h1 && h1[1].trim() === String(title).trim()) return text.slice(h1[0].length).trim()
+  return text.trim()
 }
 
 export function loadIssues(cwd) {
@@ -48,12 +54,13 @@ export function loadIssues(cwd) {
       const { meta, body } = parseFrontmatter(text)
       return {
         ...meta,
+        order: meta.order !== undefined ? Number(meta.order) : undefined,
         labels: meta.labels ? meta.labels.split(',').map((s) => s.trim()).filter(Boolean) : [],
         reviewRounds: Number(meta.reviewRounds ?? 0),
-        description: body.trim(),
+        description: stripTitleHeading(body, meta.title),
       }
     })
-    .sort((a, b) => a.id.localeCompare(b.id))
+    .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity) || a.id.localeCompare(b.id))
 }
 
 export function saveIssue(cwd, issue) {
@@ -74,7 +81,7 @@ export function splitPools(issues) {
   return {
     active: issues.filter((i) => ACTIVE_POOL_STATUSES.includes(i.status)),
     backlog: issues.filter((i) => BACKLOG_POOL_STATUSES.includes(i.status)),
-    terminal: issues.filter((i) => ['Done', 'Canceled'].includes(i.status)),
+    terminal: issues.filter((i) => TERMINAL_STATUSES.includes(i.status)),
   }
 }
 

@@ -1,10 +1,6 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-
-export function readJsonIfExists(file) {
-  if (!existsSync(file)) return null
-  return JSON.parse(readFileSync(file, 'utf8'))
-}
+import { DATA_DIR, CONFIG_FILE, BOARD_FILE } from '../constants.js'
 
 export function writeJson(file, data) {
   mkdirSync(dirname(file), { recursive: true })

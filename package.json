@@ -1,6 +1,6 @@
 {
   "name": "loopyourself",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A framework-agnostic Agent todo plugin. Local issue system natively compatible with Linear terminology — manage Linear Issues alongside local ones when the Linear MCP is enabled.",
   "type": "module",
   "license": "MIT",
@@ -12,9 +12,11 @@
   },
   "files": [
     "core/",
+    "docs/",
     "README.md",
     "LICENSE",
-    "CONTEXT.md"
+    "CONTEXT.md",
+    "!core/cli-diff.txt"
   ],
   "scripts": {
     "test": "node --test core/test/"

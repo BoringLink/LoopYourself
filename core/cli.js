@@ -8,6 +8,7 @@ import { runDone, runBlock } from './commands/done.js'
 import { runReorder } from './commands/reorder.js'
 import { runStart, runStop, runLoopStatus } from './commands/loop.js'
 import { runLink, runVerify } from './commands/link.js'
+import { runAttach } from './commands/attach.js'
 
 const USAGE = `LoopYourself — an Agent todo system aligned with Linear terminology.
 
@@ -22,6 +23,8 @@ Usage:
   loopyourself start | stop | loop      Control the unattended loop
   loopyourself reorder <ids...>         Re-sequence the Active pool (USER)
   loopyourself link <team> [project]    Record the Linear scope in config
+  loopyourself attach <id> <linearId> [url]
+                                         Link a Linear issue to a local issue
   loopyourself verify                   Push preflight: statusMap completeness
   loopyourself status                   Show the two-pool board
 
@@ -53,6 +56,8 @@ async function main() {
       return runReorder(process.cwd(), args)
     case 'link':
       return runLink(process.cwd(), args)
+    case 'attach':
+      return runAttach(process.cwd(), args)
     case 'verify':
       return runVerify(process.cwd(), args)
     case 'status':

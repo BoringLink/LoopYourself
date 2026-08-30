@@ -1,6 +1,5 @@
-import { join } from 'node:path'
-import { writeFileSync } from 'node:fs'
 import { loadConfig, validateStatusMap } from '../lib/linearmap.js'
+import { writeJson, dataPaths } from '../lib/fsutil.js'
 
 // Link: record the Linear Scope (team + project) that ALL Linear operations must
 // stay within — prevents drift (Linear Scope, CONTEXT.md).
@@ -18,8 +17,7 @@ export function runLink(cwd, args) {
     project: project ?? null,
     statusMap: config.linear?.statusMap ?? {},
   }
-  const file = join(cwd, '.loopyourself', 'config.json')
-  writeFileSync(file, JSON.stringify(config, null, 2) + '\n')
+  writeJson(dataPaths(cwd).config, config)
   const lines = [
     `Linked Linear scope: team "${team}"${project ? `, project "${project}"` : ' (no project)'}`,
     'All Linear creates/updates from this system stay within this scope.',

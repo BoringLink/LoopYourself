@@ -2,7 +2,8 @@ import { loadIssues, saveIssue } from '../lib/issues.js'
 import { canTransition } from '../lib/statemachine.js'
 
 // Advance one step along the legal workflow chain.
-// review-fail: In Review -> In Progress, increments reviewRounds.
+// --review-fail: In Review -> In Progress, increments reviewRounds.
+// Blocked -> In Progress resumes a circuit-broken issue.
 export function runAdvance(cwd, args) {
   const id = args[0]
   if (!id) {
@@ -18,37 +19,32 @@ export function runAdvance(cwd, args) {
     process.exitCode = 1
     return
   }
+  const from = issue.status
   let to
   if (reviewFail) {
-    if (issue.status !== 'In Review') {
-      process.stderr.write(`error: --review-fail only valid from In Review (current: ${issue.status})\n`)
+    if (from !== 'In Review') {
+      process.stderr.write(`error: --review-fail only valid from In Review (current: ${from})\n`)
       process.exitCode = 1
       return
     }
     to = 'In Progress'
   } else {
-    const options = {
-      Ready: 'Todo',
-      Todo: 'In Progress',
-      'In Progress': 'In Review',
-    }
-    to = options[issue.status]
+    const next = { Ready: 'Todo', Todo: 'In Progress', 'In Progress': 'In Review', Blocked: 'In Progress' }
+    to = next[from]
     if (!to) {
-      process.stderr.write(`error: cannot advance from ${issue.status}\n`)
+      process.stderr.write(`error: cannot advance from ${from}\n`)
       process.exitCode = 1
       return
     }
   }
-  if (!canTransition(issue.status, to)) {
-    process.stderr.write(`error: illegal transition ${issue.status} -> ${to}\n`)
+  if (!canTransition(from, to)) {
+    process.stderr.write(`error: illegal transition ${from} -> ${to}\n`)
     process.exitCode = 1
     return
   }
   issue.status = to
-  if (to === 'In Progress' && args.includes('--review-fail')) {
-    issue.reviewRounds = (issue.reviewRounds ?? 0) + 1
-  }
+  if (reviewFail) issue.reviewRounds = (issue.reviewRounds ?? 0) + 1
   issue.updatedAt = new Date().toISOString()
   saveIssue(cwd, issue)
-  process.stdout.write(`${issue.id}: ${issue.status} -> ${to}\n`)
+  process.stdout.write(`${id}: ${from} -> ${to}\n`)
 }
