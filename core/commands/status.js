@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { dataPaths } from '../lib/fsutil.js'
+import { loadIssues, renderBoard } from '../lib/issues.js'
 
 export function runStatus(cwd) {
   const paths = dataPaths(cwd)
@@ -9,19 +10,14 @@ export function runStatus(cwd) {
     return
   }
   const config = JSON.parse(readFileSync(paths.config, 'utf8'))
-  const board = existsSync(paths.board) ? readFileSync(paths.board, 'utf8') : ''
-  const active = countIssues(board, '## Active')
-  const backlog = countIssues(board, '## Backlog')
-  const lines = [
-    'LoopYourself board',
-    `  Active:  ${active} (WIP limit ${config.wipLimit})`,
-    `  Backlog: ${backlog}`,
-  ]
-  process.stdout.write(lines.join('\n') + '\n')
-}
-
-function countIssues(board, heading) {
-  const section = board.split(heading)[1]
-  if (!section) return 0
-  return section.split('\n').filter((line) => /^\s*[-\d]/.test(line.replace('<!--', '').trim()) && line.trim() !== '' && !line.trim().startsWith('<!--')).length
+  const issues = loadIssues(cwd)
+  process.stdout.write(renderBoard(issues, config.wipLimit))
+  const { active, backlog, terminal } = {
+    active: issues.filter((i) => ['Ready', 'Todo', 'In Progress', 'In Review', 'Blocked'].includes(i.status)),
+    backlog: issues.filter((i) => i.status === 'Backlog'),
+    terminal: issues.filter((i) => ['Done', 'Canceled'].includes(i.status)),
+  }
+  process.stdout.write(
+    `\nsummary: active ${active.length} (WIP limit ${config.wipLimit}), backlog ${backlog.length}, done ${terminal.length}\n`,
+  )
 }
