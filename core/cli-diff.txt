@@ -1,7 +1,0 @@
-    case 'reorder':
-      return runReorder(process.cwd(), args)
-    case 'link':
-    case 'verify':
-      return import('./commands/link.js').then((m) =>
-        cmd === 'link' ? m.runLink(process.cwd(), args) : m.runVerify(process.cwd(), args)
-      )
