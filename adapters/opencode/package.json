@@ -1,0 +1,17 @@
+{
+  "name": "@loopyourself/opencode-plugin",
+  "version": "0.1.0",
+  "description": "OpenCode adapter for LoopYourself — injects /loopyourself/ commands and continues the unattended loop on session.idle.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./plugin/index.js",
+  "files": [
+    "plugin/"
+  ],
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "loopyourself",
+    "linear"
+  ]
+}
