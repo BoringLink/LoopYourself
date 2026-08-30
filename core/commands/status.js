@@ -5,7 +5,7 @@ import { loadIssues, renderBoard, splitPools } from '../lib/issues.js'
 export function runStatus(cwd) {
   const paths = dataPaths(cwd)
   if (!existsSync(paths.config)) {
-    process.stdout.write('Not initialized. Run `loopyourself init` first.\n')
+    process.stderr.write('Not initialized. Run `loopyourself init` first.\n')
     process.exitCode = 1
     return
   }
