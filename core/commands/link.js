@@ -1,9 +1,9 @@
 import { join } from 'node:path'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { loadConfig } from '../lib/linearmap.js'
+import { writeFileSync } from 'node:fs'
+import { loadConfig, validateStatusMap } from '../lib/linearmap.js'
 
 // Link: record the Linear Scope (team + project) that ALL Linear operations must
-// stay within — prevents drift (ADR: Linear Scope).
+// stay within — prevents drift (Linear Scope, CONTEXT.md).
 export function runLink(cwd, args) {
   const [team, project] = args
   if (!team) {
@@ -24,7 +24,7 @@ export function runLink(cwd, args) {
     `Linked Linear scope: team "${team}"${project ? `, project "${project}"` : ' (no project)'}`,
     'All Linear creates/updates from this system stay within this scope.',
     '',
-    'statusMap is now MANDATORY before any push. Fill it in config.json, e.g.:',
+    'statusMap is MANDATORY before any push. Fill it in config.json, e.g.:',
     JSON.stringify({ linear: { statusMap: { Ready: 'Todo', 'In Review': 'In Review' } } }, null, 2),
   ]
   process.stdout.write(lines.join('\n') + '\n')
@@ -37,7 +37,6 @@ export function runVerify(cwd) {
     process.stdout.write('linear: not linked (local-only mode)\n')
     return
   }
-  const { validateStatusMap } = awaitImport()
   const { ok, errors } = validateStatusMap(config)
   if (ok) {
     process.stdout.write('statusMap: complete — push preflight passes\n')
@@ -46,11 +45,3 @@ export function runVerify(cwd) {
     process.exitCode = 1
   }
 }
-
-function awaitImport() {
-  // small indirection to keep this file import-clean for tree-shaking in adapters
-  // eslint-disable-next-line
-  return { validateStatusMap: (cfg) => validateStatusMapImpl(cfg) }
-}
-
-import { validateStatusMap as validateStatusMapImpl } from '../lib/linearmap.js'
