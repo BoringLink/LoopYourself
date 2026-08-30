@@ -3,7 +3,7 @@
 ## Install
 
 ```sh
-opencode plugin @loopyourself/opencode-plugin
+opencode plugin @boringlink/opencode-plugin
 ```
 
 This writes the package into your `opencode.json` `plugin` array; OpenCode

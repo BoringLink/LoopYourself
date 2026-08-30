@@ -1,5 +1,5 @@
 {
-  "name": "@loopyourself/opencode-plugin",
+  "name": "@boringlink/opencode-plugin",
   "version": "0.1.0",
   "description": "OpenCode adapter for LoopYourself — injects /loopyourself/ commands and continues the unattended loop on session.idle.",
   "type": "module",
@@ -8,6 +8,10 @@
   "files": [
     "plugin/"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BoringLink/LoopYourself"
+  },
   "keywords": [
     "opencode",
     "opencode-plugin",
